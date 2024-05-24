@@ -1,4 +1,4 @@
-import pygame  # type: ignore
+import pygame
 import os
 import random
 
@@ -182,3 +182,43 @@ def main():
     pontos = 0
     relogio = pygame.time.Clock()
 
+    rodando = True
+    while rodando:
+        relogio.tick(30)
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.quit():
+                rodando = False
+                pygame.quit()
+                quit()
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_ESCAPE:
+                    for passaro in passaros:
+                        passaro.pular()
+        for passaro in passaros:
+            passaro.mover()
+        chao.mover()
+
+        adicionar_cano = False
+        remover_canos = []
+        for cano in canos:
+            for i, passaro in enumerate(passaros):
+                if cano.colidir(passaro):
+                    passaros.pop(i)
+                if not cano.passou and passaro.x > cano.x:
+                    cano.passsou = True
+                    adicionar_cano = True
+            cano.mover()
+            if cano.x + cano.CANO_TOPO.get_width() <0:
+                remover_canos.append(cano)
+        if adicionar_cano:
+            pontos += 1
+            canos.append(Cano(600))
+        for cano in remover_canos:
+            canos.remove(cano)
+
+        for i, passaro in enumerate(passaros):
+            if (passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
+                passaros.pop(i)
+
+        desenhar_tela(tela, passaros, canos, chao, pontos)
