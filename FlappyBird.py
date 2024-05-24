@@ -88,7 +88,8 @@ class Passaro:
         retangulo = imagem_rotacionada.get_rect(center = posicao_centro_imagem )
         tela.blit(imagem_rotacionada, retangulo.topleft)
 
-    
+    def get_mask(self):
+        pygame.mask.from_surface(self.imagem)
 
 
 
